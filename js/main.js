@@ -252,7 +252,8 @@ async function buyPack(packName, amount) {
                     console.log('Verification result:', verifyResult);
 
                     if (verifyResult.success) {
-                        showSuccessModal(packName, amount, verifyResult.orderId);
+                        // Show success modal with Discord link and Instagram info
+                        showSuccessModal(verifyResult.communityAccess?.discordInvite);
                     } else {
                         showErrorModal('Payment verification failed. Please contact support.');
                     }
