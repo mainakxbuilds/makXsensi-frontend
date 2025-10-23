@@ -3,6 +3,43 @@ const API_URL = window.location.hostname === 'localhost' || window.location.host
     ? 'http://localhost:3000'  // Local development
     : 'https://makxsensi-api.onrender.com';  // Production backend URL on Render
 
+// Theme Management
+const themeToggle = document.getElementById('themeToggle');
+const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+let currentTheme = localStorage.getItem('theme') || (prefersDarkScheme.matches ? 'dark' : 'light');
+
+function setTheme(theme) {
+    document.body.className = `${theme}-theme`;
+    localStorage.setItem('theme', theme);
+    themeToggle.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+}
+
+// Initialize theme
+setTheme(currentTheme);
+
+// Theme toggle handler
+themeToggle?.addEventListener('click', () => {
+    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    setTheme(currentTheme);
+});
+
+// Success Modal Management
+function showSuccessModal(discordInvite) {
+    const modal = document.getElementById('successModal');
+    const discordLink = document.getElementById('discordLink');
+    
+    if (discordInvite && discordInvite !== 'YOUR_DISCORD_LINK_HERE') {
+        discordLink.href = discordInvite;
+    }
+    
+    modal.style.display = 'block';
+}
+
+function closeSuccessModal() {
+    const modal = document.getElementById('successModal');
+    modal.style.display = 'none';
+}
+
 // Mobile Navigation Toggle
 const navToggle = document.getElementById('navToggle');
 const navMenu = document.getElementById('navMenu');

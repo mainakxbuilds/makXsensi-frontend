@@ -16,6 +16,40 @@
     
     <!-- Razorpay -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+        <button id="themeToggle" aria-label="Toggle theme">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <h2>🎉 Welcome to the MakXsensi Community!</h2>
+            <div class="community-info">
+                <p>Thank you for your purchase! Here's your exclusive access:</p>
+                <div class="access-details">
+                    <div class="access-item">
+                        <i class="fab fa-discord"></i>
+                        <h3>Discord Community</h3>
+                        <p>Join our private Discord server:</p>
+                        <a id="discordLink" href="#" class="btn btn-primary" target="_blank">Join Discord</a>
+                    </div>
+                    <div class="access-item">
+                        <i class="fab fa-instagram"></i>
+                        <h3>Instagram Support</h3>
+                        <p>DM me on Instagram for personalized support:</p>
+                        <a href="https://instagram.com/m4kxsensi" class="btn btn-primary" target="_blank">@m4kxsensi</a>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeSuccessModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <style>
         /* Complete Integrated CSS */
