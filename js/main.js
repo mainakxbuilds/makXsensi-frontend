@@ -248,6 +248,7 @@ async function buyPack(packName, amount) {
                         })
                     });
 
+                    console.log('Verify response status:', verifyResponse.status);
                     const verifyResult = await verifyResponse.json();
                     console.log('Verification result:', verifyResult);
 
@@ -255,7 +256,9 @@ async function buyPack(packName, amount) {
                         // Show success modal with Discord link and Instagram info
                         showSuccessModal(verifyResult.communityAccess?.discordInvite);
                     } else {
-                        showErrorModal('Payment verification failed. Please contact support.');
+                        const errorMessage = verifyResult.message || 'Payment verification failed';
+                        console.error('Verification failed:', errorMessage);
+                        showErrorModal(`Payment verification failed: ${errorMessage}. Please contact support.`);
                     }
                 } catch (error) {
                     console.error('Verification error:', error);
