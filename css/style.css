@@ -17,6 +17,30 @@
 }
 
 /* Theme Classes */
+.light-theme {
+    --bg-color: var(--light-bg);
+    --text-color: var(--light-text);
+    --primary-color: var(--light-primary);
+    --secondary-color: var(--light-secondary);
+    --accent-color: var(--light-accent);
+    --border-color: var(--light-border);
+}
+
+.dark-theme {
+    --bg-color: var(--dark-bg);
+    --text-color: var(--dark-text);
+    --primary-color: var(--dark-primary);
+    --secondary-color: var(--dark-secondary);
+    --accent-color: var(--dark-accent);
+    --border-color: var(--dark-border);
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 .theme-toggle {
     position: fixed;
     top: 20px;
@@ -69,6 +93,29 @@
     border-radius: 15px;
     position: relative;
     animation: modalSlideIn 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+/* Theme-specific element styles */
+a {
+    color: var(--accent-color);
+}
+
+button, .button {
+    background: var(--primary-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+input, select, textarea {
+    background: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+.card, .section {
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
 }
 
 .access-details {
