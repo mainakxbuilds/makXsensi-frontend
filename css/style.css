@@ -337,6 +337,7 @@ a:hover {
     letter-spacing: 0.5px;
     text-align: center;
     background: linear-gradient(90deg, #fff, #4cc9f0);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     position: relative;
@@ -760,12 +761,10 @@ a:hover {
         font-size: 16px;
     }
 
- } border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
 }
+
+    /* cleaned up stray block above */
+
 
 .precheckout-modal .btn-primary:hover {
     background: #e600b8;

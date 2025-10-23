@@ -1,0 +1,35 @@
+.modal-btn,
+.precheckout-modal .modal-btn {
+    background: linear-gradient(135deg, #4CC9F0, #4361EE);
+    color: #ffffff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    margin-top: 1rem;
+    width: auto;
+    display: inline-block;
+}
+
+.modal-btn:hover,
+.precheckout-modal .modal-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 
+        0 5px 15px rgba(67, 97, 238, 0.3),
+        0 0 0 1px rgba(76, 201, 240, 0.2);
+}
+
+.modal-btn.secondary,
+.precheckout-modal .modal-btn.secondary {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-left: 0.5rem;
+}
+
+.modal-btn.secondary:hover,
+.precheckout-modal .modal-btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+}

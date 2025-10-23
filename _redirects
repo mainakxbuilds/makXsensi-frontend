@@ -1,5 +1,0 @@
-# Redirects for Netlify
-/* /index.html 200
-
-# API Proxy (optional - if you want to hide backend URL)
-/api/* https://makxsensi-api.onrender.com/api/:splat 200
