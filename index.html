@@ -16,13 +16,40 @@
     
     <!-- Razorpay -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-    <!-- Theme Toggle -->
-    <div class="theme-toggle">
-        <button id="themeToggle" aria-label="Toggle theme">
-            <i class="fas fa-moon"></i>
-        </button>
-    </div>
+    
+    <style>
+        /* Theme toggle styles */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .theme-toggle button {
+            background: var(--primary-color);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle button:hover {
+            transform: scale(1.1);
+            background: var(--accent-color);
+        }
+        
+        .theme-toggle i {
+            font-size: 20px;
+        }
+    </style>
 
     <!-- Success Modal -->
     <div id="successModal" class="modal">
@@ -1462,6 +1489,13 @@
     </style>
 </head>
 <body>
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+        <button id="themeToggle" aria-label="Toggle theme">
+            <i class="fas fa-moon"></i>
+        </button>
+    </div>
+
     <!-- Loader -->
     <div id="loader" class="loader-wrapper">
         <div class="loader"></div>
