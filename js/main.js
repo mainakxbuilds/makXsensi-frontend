@@ -146,22 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Success Modal Management
-function showSuccessModal(discordInvite) {
-    const modal = document.getElementById('successModal');
-    const discordLink = document.getElementById('discordLink');
-    
-    if (discordInvite && discordInvite !== 'YOUR_DISCORD_LINK_HERE') {
-        discordLink.href = discordInvite;
-    }
-    
-    modal.style.display = 'block';
-}
-
-function closeSuccessModal() {
-    const modal = document.getElementById('successModal');
-    modal.style.display = 'none';
-}
+// Success modal is generated dynamically by showSuccessModal(packName, amount, orderId, customerEmail, discordInvite)
 
 // Mobile Navigation Toggle
 const navToggle = document.getElementById('navToggle');
@@ -314,9 +299,56 @@ async function buyPack(packName, amount) {
         button.innerHTML = '<span class="loading"></span> Processing...';
         button.disabled = true;
 
-        console.log('Creating order for:', packName, 'Amount:', amount);
+        console.log('Preparing order for:', packName, 'Amount:', amount);
 
-        // Create order on backend
+        // Show pre-checkout modal to collect customer details (email required)
+        const customerDetails = await new Promise((resolve) => {
+            const modal = document.getElementById('preCheckoutModal');
+            const nameInput = document.getElementById('pc-name');
+            const emailInput = document.getElementById('pc-email');
+            const phoneInput = document.getElementById('pc-phone');
+            const continueBtn = document.getElementById('pc-continue');
+
+            // Reset inputs
+            nameInput.value = '';
+            emailInput.value = '';
+            phoneInput.value = '';
+
+            modal.style.display = 'block';
+
+            function cleanup(result) {
+                // remove listeners
+                continueBtn.removeEventListener('click', onContinue);
+                resolve(result);
+            }
+
+            function onContinue() {
+                const emailVal = (emailInput.value || '').trim();
+                if (!emailVal || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(emailVal)) {
+                    alert('Please enter a valid email address.');
+                    return;
+                }
+                const data = {
+                    customerEmail: emailVal,
+                    customerName: (nameInput.value || '').trim(),
+                    customerPhone: (phoneInput.value || '').trim()
+                };
+                modal.style.display = 'none';
+                cleanup(data);
+            }
+
+            continueBtn.addEventListener('click', onContinue);
+        });
+
+        if (!customerDetails || !customerDetails.customerEmail) {
+            alert('A valid email is required to complete the purchase.');
+            button.innerHTML = originalContent;
+            button.disabled = false;
+            return;
+        }
+        const { customerEmail, customerName, customerPhone } = customerDetails;
+
+        // Create order on backend and include customer info so backend can store it if needed
         const response = await fetch(`${API_URL}/api/payment/create-order`, {
             method: 'POST',
             headers: {
@@ -324,7 +356,10 @@ async function buyPack(packName, amount) {
             },
             body: JSON.stringify({
                 amount: amount,
-                packName: packName
+                packName: packName,
+                customerEmail,
+                customerName,
+                customerPhone
             })
         });
 
@@ -376,8 +411,8 @@ async function buyPack(packName, amount) {
                     console.log('Verification result:', verifyResult);
 
                     if (verifyResult.success) {
-                        // Show success modal with Discord link and Instagram info
-                        showSuccessModal(verifyResult.communityAccess?.discordInvite);
+                        // Show success modal with order info, user's email and Discord invite
+                        showSuccessModal(packName, amount, verifyResult.orderId, verifyResult.customerEmail || '', verifyResult.communityAccess?.discordInvite || 'https://discord.gg/FjBGpr8gBJ');
                     } else {
                         const errorMessage = verifyResult.message || 'Payment verification failed';
                         console.error('Verification failed:', errorMessage);
@@ -393,9 +428,9 @@ async function buyPack(packName, amount) {
                 }
             },
             prefill: {
-                name: '',
-                email: '',
-                contact: ''
+                name: customerName || '',
+                email: customerEmail || '',
+                contact: customerPhone || ''
             },
             notes: {
                 packName: packName
@@ -475,7 +510,7 @@ async function buyPack(packName, amount) {
 }
 
 // Success Modal
-function showSuccessModal(packName, amount, orderId) {
+function showSuccessModal(packName, amount, orderId, customerEmail, discordInvite) {
     // Remove existing modal if any
     const existingModal = document.getElementById('successModal');
     if (existingModal) {
@@ -489,11 +524,16 @@ function showSuccessModal(packName, amount, orderId) {
                 <span class="close-modal">&times;</span>
                 <i class="fas fa-check-circle success-icon"></i>
                 <h2>Payment Successful!</h2>
-                <p class="success-message">Thank you for purchasing <strong>${packName}</strong></p>
+                <p class="success-message">Thank you for purchasing <strong>${packName}</strong> — we appreciate your support!</p>
                 <p class="order-details">Order ID: <code>${orderId || 'N/A'}</code></p>
                 <p class="amount-paid">Amount Paid: ₹${amount}</p>
-                <p class="delivery-info">Check your email for the sensitivity settings and setup instructions.</p>
-                <button class="btn-primary modal-btn" onclick="closeModal('successModal')">Awesome!</button>
+                <p class="delivery-info">A confirmation has been sent to <strong>${customerEmail || 'your email'}</strong>. If you don't see it, check your spam folder.</p>
+                <p class="community-info">Join our private Discord server for exclusive content and support:</p>
+                <p><a id="discordInviteLink" href="${discordInvite}" target="_blank" rel="noopener noreferrer">Join our Discord Server</a></p>
+                <div style="display:flex;gap:8px;margin-top:12px;">
+                    <a class="btn-primary modal-btn" href="${discordInvite}" target="_blank" rel="noopener noreferrer">Join Discord</a>
+                    <button class="btn-primary modal-btn" id="claimSensiBtn">I Joined — Claim Sensi</button>
+                </div>
             </div>
         </div>
     `;
@@ -507,6 +547,44 @@ function showSuccessModal(packName, amount, orderId) {
     setTimeout(() => {
         closeModal('successModal');
     }, 10000);
+
+    // Wire claim button
+    setTimeout(() => {
+        const claimBtn = document.getElementById('claimSensiBtn');
+        if (claimBtn) {
+            claimBtn.addEventListener('click', () => confirmJoin(orderId));
+        }
+    }, 50);
+}
+
+// Confirm join handler - called when user clicks 'I Joined — Claim Sensi'
+async function confirmJoin(orderId) {
+    if (!orderId) return;
+    const btn = document.getElementById('claimSensiBtn');
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Claiming...';
+    }
+
+    try {
+        const resp = await fetch(`${API_URL}/api/payment/confirm-join`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ orderId })
+        });
+        const result = await resp.json();
+        if (result.success) {
+            alert('Thanks — your join has been confirmed and your sensi will be delivered via email shortly.');
+            closeModal('successModal');
+        } else {
+            alert('Could not confirm join: ' + (result.message || 'Try again later'));
+            if (btn) { btn.disabled = false; btn.textContent = 'I Joined — Claim Sensi'; }
+        }
+    } catch (err) {
+        console.error('Error confirming join:', err);
+        alert('Network error while confirming join. Please try again.');
+        if (btn) { btn.disabled = false; btn.textContent = 'I Joined — Claim Sensi'; }
+    }
 }
 
 // Error Modal

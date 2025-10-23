@@ -110,6 +110,33 @@
         </div>
     </div>
     
+    <!-- Pre-checkout Modal -->
+    <div id="preCheckoutModal" class="modal" style="display:none;">
+        <div class="modal-content precheckout-modal">
+            <span class="close-modal" onclick="closeModal('preCheckoutModal')">&times;</span>
+            <h2>Confirm your details</h2>
+            <p>Please enter your email so we can send your sensitivity pack and invite you to the Discord.</p>
+            <form id="preCheckoutForm">
+                <div class="form-row">
+                    <label for="pc-name">Name (optional)</label>
+                    <input id="pc-name" name="name" type="text" placeholder="Your name">
+                </div>
+                <div class="form-row">
+                    <label for="pc-email">Email (required)</label>
+                    <input id="pc-email" name="email" type="email" placeholder="you@example.com" required>
+                </div>
+                <div class="form-row">
+                    <label for="pc-phone">Phone (optional)</label>
+                    <input id="pc-phone" name="phone" type="tel" placeholder="99999xxxxx">
+                </div>
+                <div style="display:flex;gap:8px;margin-top:12px;">
+                    <button type="button" class="btn-primary" id="pc-continue">Continue to Payment</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('preCheckoutModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <style>
         /* Complete Integrated CSS */
         :root {
