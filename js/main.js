@@ -1,6 +1,6 @@
 // API Configuration
 const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
-const isVercel = window.location.hostname === 'maksensi.vercel.app' || window.location.hostname.endsWith('.vercel.app');
+const isVercel = window.location.hostname === 'makxsensi.vercel.app' || window.location.hostname.endsWith('.vercel.app');
 
 const API_URL = isLocal
     ? 'http://localhost:3000'
