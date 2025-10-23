@@ -1,0 +1,121 @@
+/* Theme Variables */
+:root {
+    /* Common colors that don't change with theme */
+    --success-color: #4caf50;
+    --error-color: #f44336;
+
+    /* Default theme (dark) */
+    --primary-color: #ff6b35;
+    --secondary-color: #f72585;
+    --accent-color: #4cc9f0;
+    --bg-color: #0a0e27;
+    --text-color: #ffffff;
+    --text-gray: #a0a0a0;
+    --border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Light theme */
+[data-theme="light"] {
+    --primary-color: #0969da;
+    --secondary-color: #f6f8fa;
+    --accent-color: #218bff;
+    --bg-color: #ffffff;
+    --text-color: #24292f;
+    --text-gray: #57606a;
+    --border-color: #d0d7de;
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+    --primary-color: #58a6ff;
+    --secondary-color: #161b22;
+    --accent-color: #1f6feb;
+    --bg-color: #0d1117;
+    --text-color: #c9d1d9;
+    --text-gray: #8b949e;
+    --border-color: #30363d;
+}
+
+/* Neon theme */
+[data-theme="neon"] {
+    --primary-color: #f92aad;
+    --secondary-color: #241b2f;
+    --accent-color: #36f9f6;
+    --bg-color: #2b213a;
+    --text-color: #ff7edb;
+    --text-gray: #b393d3;
+    --border-color: #ff7edb;
+}
+
+/* Base styles */
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+/* Apply theme colors to common elements */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-color);
+}
+
+p, span, div {
+    color: var(--text-color);
+}
+
+a {
+    color: var(--primary-color);
+}
+
+/* Apply background colors */
+.section {
+    background-color: var(--bg-color);
+}
+
+.card, .modal, .dropdown-menu {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
+/* Text variations */
+.text-muted, .text-secondary {
+    color: var(--text-gray) !important;
+}
+
+/* Borders */
+.border {
+    border-color: var(--border-color) !important;
+}
+
+/* Buttons */
+.btn {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+}
+
+.btn:hover {
+    background-color: var(--accent-color);
+}
+
+/* Form elements */
+input, textarea, select {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+/* Header and navigation */
+.navbar {
+    background-color: var(--bg-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.nav-link {
+    color: var(--text-color);
+}
+
+/* Footer */
+footer {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}

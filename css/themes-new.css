@@ -1,0 +1,257 @@
+/* Theme Variables */
+:root {
+    --transition-speed: 0.6s;
+    --transition-ease: cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Common colors */
+    --success-color: #4caf50;
+    --error-color: #f44336;
+
+    /* Default theme (dark) */
+    --primary-color: #ff6b35;
+    --secondary-color: #f72585;
+    --accent-color: #4cc9f0;
+    --bg-color: #0a0e27;
+    --text-color: #ffffff;
+    --text-gray: #a0a0a0;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --bg-pattern: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+}
+
+/* Theme Transition Overlay */
+.theme-transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0;
+    mix-blend-mode: overlay;
+}
+
+/* Light theme */
+[data-theme="light"] {
+    --primary-color: #0969da;
+    --secondary-color: #f6f8fa;
+    --accent-color: #218bff;
+    --bg-color: #ffffff;
+    --text-color: #24292f;
+    --text-gray: #57606a;
+    --border-color: #d0d7de;
+    --bg-pattern: url('https://www.transparenttextures.com/patterns/subtle-white-feathers.png');
+}
+
+[data-theme="light"] .theme-transition-overlay {
+    background: radial-gradient(circle at center, #ffffff 0%, transparent 100%);
+    animation: lightThemeTransition 1.2s var(--transition-ease);
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+    --primary-color: #58a6ff;
+    --secondary-color: #161b22;
+    --accent-color: #1f6feb;
+    --bg-color: #0d1117;
+    --text-color: #c9d1d9;
+    --text-gray: #8b949e;
+    --border-color: #30363d;
+    --bg-pattern: url('https://www.transparenttextures.com/patterns/dark-geometric.png');
+}
+
+[data-theme="dark"] .theme-transition-overlay {
+    background: radial-gradient(circle at center, #000000 0%, transparent 100%);
+    animation: darkThemeTransition 1.2s var(--transition-ease);
+}
+
+/* Neon theme */
+[data-theme="neon"] {
+    --primary-color: #f92aad;
+    --secondary-color: #241b2f;
+    --accent-color: #36f9f6;
+    --bg-color: #2b213a;
+    --text-color: #ff7edb;
+    --text-gray: #b393d3;
+    --border-color: #ff7edb;
+    --bg-pattern: url('https://www.transparenttextures.com/patterns/diagmonds.png');
+}
+
+[data-theme="neon"] .theme-transition-overlay {
+    background: radial-gradient(circle at center, 
+        rgba(249, 42, 173, 0.5) 0%, 
+        rgba(54, 249, 246, 0.5) 50%, 
+        transparent 100%);
+    animation: neonThemeTransition 1.2s var(--transition-ease);
+}
+
+/* Base styles with enhanced transitions */
+body {
+    transition: background-color var(--transition-speed) var(--transition-ease),
+                color var(--transition-speed) var(--transition-ease);
+    background-color: var(--bg-color);
+    background-image: var(--bg-pattern);
+    color: var(--text-color);
+    position: relative;
+}
+
+/* Advanced Theme Transitions */
+@keyframes lightThemeTransition {
+    0% { opacity: 0; transform: scale(1.5); }
+    50% { opacity: 0.8; transform: scale(2); }
+    100% { opacity: 0; transform: scale(2.5); }
+}
+
+@keyframes darkThemeTransition {
+    0% { opacity: 0; transform: scale(1.5); }
+    50% { opacity: 0.8; transform: scale(2); }
+    100% { opacity: 0; transform: scale(2.5); }
+}
+
+@keyframes neonThemeTransition {
+    0% { opacity: 0; transform: scale(1); filter: hue-rotate(0deg); }
+    50% { opacity: 0.8; transform: scale(1.5); filter: hue-rotate(180deg); }
+    100% { opacity: 0; transform: scale(2); filter: hue-rotate(360deg); }
+}
+
+/* Enhanced Neon Theme Effects */
+[data-theme="neon"] body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: 
+        radial-gradient(circle at 50% 50%, 
+            rgba(249, 42, 173, 0.1) 0%, 
+            rgba(54, 249, 246, 0.1) 50%, 
+            transparent 100%);
+    animation: neonPulse 8s ease-in-out infinite;
+    z-index: 0;
+    mix-blend-mode: overlay;
+}
+
+/* Enhanced element transitions */
+*, *::before, *::after {
+    transition: all var(--transition-speed) var(--transition-ease);
+}
+
+/* Dramatic hover effects for cards */
+.card {
+    transform: translateY(0);
+    transition: transform 0.5s var(--transition-ease),
+                box-shadow 0.5s var(--transition-ease);
+}
+
+[data-theme="light"] .card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="neon"] .card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 0 30px var(--primary-color);
+    animation: neonCardPulse 2s infinite;
+}
+
+/* Button animations */
+.btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s var(--transition-ease);
+}
+
+[data-theme="light"] .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(9, 105, 218, 0.2);
+}
+
+[data-theme="dark"] .btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="neon"] .btn {
+    border: 2px solid var(--accent-color);
+}
+
+[data-theme="neon"] .btn:hover {
+    animation: neonButtonPulse 1s infinite;
+    box-shadow: 0 0 20px var(--accent-color);
+}
+
+/* Neon theme specific animations */
+@keyframes neonPulse {
+    0% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.2); }
+    100% { opacity: 0.5; transform: scale(1); }
+}
+
+@keyframes neonCardPulse {
+    0% { box-shadow: 0 0 20px var(--primary-color); }
+    50% { box-shadow: 0 0 40px var(--accent-color); }
+    100% { box-shadow: 0 0 20px var(--primary-color); }
+}
+
+@keyframes neonButtonPulse {
+    0% { box-shadow: 0 0 10px var(--accent-color); }
+    50% { box-shadow: 0 0 25px var(--primary-color); }
+    100% { box-shadow: 0 0 10px var(--accent-color); }
+}
+
+/* Text glowing effects for neon theme */
+[data-theme="neon"] h1,
+[data-theme="neon"] h2,
+[data-theme="neon"] h3 {
+    text-shadow: 0 0 10px var(--accent-color);
+    animation: textGlow 3s infinite;
+}
+
+@keyframes textGlow {
+    0% { text-shadow: 0 0 10px var(--accent-color); }
+    50% { text-shadow: 0 0 20px var(--primary-color), 0 0 30px var(--accent-color); }
+    100% { text-shadow: 0 0 10px var(--accent-color); }
+}
+
+/* Section transition effects */
+.section {
+    position: relative;
+    transition: transform 0.8s var(--transition-ease);
+}
+
+[data-theme="neon"] .section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg,
+        transparent 0%,
+        rgba(54, 249, 246, 0.1) 50%,
+        transparent 100%);
+    animation: neonSweep 3s linear infinite;
+}
+
+@keyframes neonSweep {
+    0% { transform: translateX(-100%) translateY(-100%); }
+    100% { transform: translateX(100%) translateY(100%); }
+}
+
+/* Add this to your HTML */
+.js-theme-transition {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+}

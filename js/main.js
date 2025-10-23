@@ -4,52 +4,146 @@ const API_URL = window.location.hostname === 'localhost' || window.location.host
     : 'https://makxsensi-api.onrender.com';  // Production backend URL on Render
 
 // Theme Management
-const themes = ['light', 'dark', 'neon'];
-let currentTheme = localStorage.getItem('theme') || 'light';
+const themes = [
+    { id: 'light', icon: 'fa-sun', label: 'Light' },
+    { id: 'dark', icon: 'fa-moon', label: 'Dark' },
+    { id: 'neon', icon: 'fa-bolt', label: 'Neon' }
+];
+
+let currentTheme = localStorage.getItem('theme') || 'dark';
+document.documentElement.setAttribute('data-theme', currentTheme);
 
 function createThemeSwitcher() {
-    // First, remove any existing theme switcher
-    const existingSwitcher = document.querySelector('.theme-switcher');
-    if (existingSwitcher) {
-        existingSwitcher.remove();
-    }
+    const themeSwitcher = document.querySelector('.theme-switcher');
+    if (!themeSwitcher) return;
 
-    const themeSwitcher = document.createElement('div');
-    themeSwitcher.className = 'theme-switcher';
+    // Create theme button
+    const themeButton = document.createElement('button');
+    themeButton.style.cssText = `
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 2px solid var(--border-color);
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: var(--text-color);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    `;
     
+    const currentThemeData = themes.find(t => t.id === currentTheme) || themes[0];
+    themeButton.innerHTML = `<i class="fas ${currentThemeData.icon}"></i>`;
+    themeSwitcher.appendChild(themeButton);
+    
+    // Create theme list
+    const themeList = document.createElement('div');
+    themeList.style.cssText = `
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 8px;
+        width: 180px;
+        display: none;
+        flex-direction: column;
+        gap: 4px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    `;
+    themeSwitcher.appendChild(themeList);
+    
+    // Add theme options
     themes.forEach(theme => {
-        const button = document.createElement('button');
-        button.className = `theme-button ${theme === currentTheme ? 'active' : ''}`;
-        button.textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
-        button.onclick = () => setTheme(theme);
-        themeSwitcher.appendChild(button);
+        const option = document.createElement('div');
+        option.style.cssText = `
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-color);
+            transition: all 0.2s ease;
+            ${theme.id === currentTheme ? 'background: var(--primary-color); color: white;' : ''}
+        `;
+        option.innerHTML = `
+            <i class="fas ${theme.icon}" style="width: 20px; text-align: center;"></i>
+            ${theme.label}
+        `;
+        option.onclick = () => setTheme(theme.id);
+        themeList.appendChild(option);
     });
     
-    document.body.appendChild(themeSwitcher);
-}
-
-function setTheme(theme) {
-    // Remove all theme classes
-    themes.forEach(t => document.body.classList.remove(`${t}-theme`));
+    // Toggle theme list
+    themeButton.onclick = () => {
+        const isVisible = themeList.style.display === 'flex';
+        themeList.style.display = isVisible ? 'none' : 'flex';
+    };
     
-    // Add new theme class
-    document.body.classList.add(`${theme}-theme`);
-    
-    // Store the current theme
-    localStorage.setItem('theme', theme);
-    currentTheme = theme;
-    
-    // Update buttons
-    document.querySelectorAll('.theme-button').forEach(btn => {
-        const isActive = btn.textContent.toLowerCase() === theme;
-        btn.classList.toggle('active', isActive);
+    // Close theme list when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!themeSwitcher.contains(e.target)) {
+            themeList.style.display = 'none';
+        }
     });
 }
 
-// Initialize theme
+function setTheme(themeId) {
+    // Update theme
+    currentTheme = themeId;
+    document.documentElement.setAttribute('data-theme', themeId);
+    localStorage.setItem('theme', themeId);
+    
+    // Find theme data
+    const themeData = themes.find(t => t.id === themeId);
+    if (!themeData) return;
+    
+    // Update theme button icon
+    const themeButton = document.querySelector('.theme-switcher button');
+    if (themeButton) {
+        themeButton.innerHTML = `<i class="fas ${themeData.icon}"></i>`;
+    }
+    
+    // Update theme options in dropdown
+    const themeOptions = document.querySelectorAll('.theme-switcher > div > div');
+    themeOptions.forEach(option => {
+        const isCurrentTheme = option.textContent.trim() === themeData.label;
+        option.style.background = isCurrentTheme ? 'var(--primary-color)' : 'transparent';
+        option.style.color = isCurrentTheme ? 'white' : 'var(--text-color)';
+    });
+    
+    // Log theme change for debugging
+    console.log('Theme changed to:', themeId);
+    
+}
+
+// Initialize theme when document is ready
 document.addEventListener('DOMContentLoaded', () => {
+    // Set initial theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    console.log('Saved theme:', savedTheme);
+    
+    // Apply the theme
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    currentTheme = savedTheme;
+    
+    // Create theme switcher
     createThemeSwitcher();
-    setTheme(currentTheme);
+    
+    // Verify theme application
+    console.log('Current theme:', document.documentElement.getAttribute('data-theme'));
+    console.log('CSS Variables:', {
+        bgColor: getComputedStyle(document.documentElement).getPropertyValue('--bg-color'),
+        textColor: getComputedStyle(document.documentElement).getPropertyValue('--text-color'),
+        primaryColor: getComputedStyle(document.documentElement).getPropertyValue('--primary-color')
+    });
 });
 
 // Success Modal Management
