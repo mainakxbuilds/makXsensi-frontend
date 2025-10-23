@@ -673,13 +673,27 @@ function showSuccessModal(packName, amount, orderId, customerEmail, discordInvit
 
     document.body.insertAdjacentHTML('beforeend', modalHTML);
 
-    // Setup close handlers
-    setupModalClosers('successModal');
-
-    // Auto close after 10 seconds
-    setTimeout(() => {
-        closeModal('successModal');
-    }, 10000);
+    // Setup close handlers but make successModal persistent (no outside/ESC close)
+    // We'll attach only the Close button to close it.
+    const modal = document.getElementById('successModal');
+    if (modal) {
+        const closeSpan = modal.querySelector('.close-modal');
+        if (closeSpan) {
+            // Replace the X with a proper Close button for accessibility
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'btn-primary modal-btn';
+            closeBtn.id = 'successCloseBtn';
+            closeBtn.textContent = 'Close';
+            closeSpan.replaceWith(closeBtn);
+            closeBtn.addEventListener('click', () => closeModal('successModal'));
+        }
+        // Disable outside click closing for success modal
+        modal.onclick = (e) => {
+            // Prevent closing when clicking backdrop
+            e.stopPropagation();
+        };
+        // Disable ESC key closing specifically for success modal by not adding the esc handler
+    }
 
     // Wire claim button
     setTimeout(() => {
