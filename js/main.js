@@ -4,34 +4,51 @@ const API_URL = window.location.hostname === 'localhost' || window.location.host
     : 'https://makxsensi-api.onrender.com';  // Production backend URL on Render
 
 // Theme Management
-const themeToggle = document.getElementById('themeToggle');
-const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-let currentTheme = localStorage.getItem('theme') || (prefersDarkScheme.matches ? 'dark' : 'light');
+const themes = ['light', 'dark', 'neon'];
+let currentTheme = localStorage.getItem('theme') || 'light';
+
+function createThemeSwitcher() {
+    // First, remove any existing theme switcher
+    const existingSwitcher = document.querySelector('.theme-switcher');
+    if (existingSwitcher) {
+        existingSwitcher.remove();
+    }
+
+    const themeSwitcher = document.createElement('div');
+    themeSwitcher.className = 'theme-switcher';
+    
+    themes.forEach(theme => {
+        const button = document.createElement('button');
+        button.className = `theme-button ${theme === currentTheme ? 'active' : ''}`;
+        button.textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
+        button.onclick = () => setTheme(theme);
+        themeSwitcher.appendChild(button);
+    });
+    
+    document.body.appendChild(themeSwitcher);
+}
 
 function setTheme(theme) {
-    // Remove any existing theme classes
-    document.body.classList.remove('light-theme', 'dark-theme');
-    // Add the new theme class
+    // Remove all theme classes
+    themes.forEach(t => document.body.classList.remove(`${t}-theme`));
+    
+    // Add new theme class
     document.body.classList.add(`${theme}-theme`);
+    
+    // Store the current theme
     localStorage.setItem('theme', theme);
-    themeToggle.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-    // Update CSS variables
-    document.documentElement.style.setProperty('--bg-color', theme === 'dark' ? 'var(--dark-bg)' : 'var(--light-bg)');
-    document.documentElement.style.setProperty('--text-color', theme === 'dark' ? 'var(--dark-text)' : 'var(--light-text)');
-    document.documentElement.style.setProperty('--primary-color', theme === 'dark' ? 'var(--dark-primary)' : 'var(--light-primary)');
-    document.documentElement.style.setProperty('--secondary-color', theme === 'dark' ? 'var(--dark-secondary)' : 'var(--light-secondary)');
-    document.documentElement.style.setProperty('--accent-color', theme === 'dark' ? 'var(--dark-accent)' : 'var(--light-accent)');
-    document.documentElement.style.setProperty('--border-color', theme === 'dark' ? 'var(--dark-border)' : 'var(--light-border)');
+    currentTheme = theme;
+    
+    // Update buttons
+    document.querySelectorAll('.theme-button').forEach(btn => {
+        const isActive = btn.textContent.toLowerCase() === theme;
+        btn.classList.toggle('active', isActive);
+    });
 }
 
 // Initialize theme
 document.addEventListener('DOMContentLoaded', () => {
-    setTheme(currentTheme);
-});
-
-// Theme toggle handler
-themeToggle?.addEventListener('click', () => {
-    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+    createThemeSwitcher();
     setTheme(currentTheme);
 });
 
