@@ -1,19 +1,11 @@
 :root {
-    /* Light theme */
-    --light-bg: #ffffff;
-    --light-text: #1a1a1a;
-    --light-primary: #2563eb;
-    --light-secondary: #f1f5f9;
-    --light-accent: #3b82f6;
-    --light-border: #e2e8f0;
-    
-    /* Dark theme */
-    --dark-bg: #1a1a1a;
-    --dark-text: #ffffff;
-    --dark-primary: #3b82f6;
-    --dark-secondary: #27272a;
-    --dark-accent: #60a5fa;
-    --dark-border: #374151;
+    /* Default theme: dark/neon only */
+    --bg-color: var(--dark-bg);
+    --text-color: var(--dark-text);
+    --primary-color: var(--dark-primary);
+    --secondary-color: var(--dark-secondary);
+    --accent-color: var(--dark-accent);
+    --border-color: var(--dark-border);
     
     /* Neon theme */
     --neon-bg: #0a0a0a;
@@ -40,14 +32,7 @@ body {
 }
 
 /* Theme classes */
-.light-theme {
-    --bg-color: var(--light-bg);
-    --text-color: var(--light-text);
-    --primary-color: var(--light-primary);
-    --secondary-color: var(--light-secondary);
-    --accent-color: var(--light-accent);
-    --border-color: var(--light-border);
-}
+
 
 .dark-theme {
     --bg-color: var(--dark-bg);
@@ -139,48 +124,632 @@ a:hover {
 }
 
 /* Pre-checkout modal styles */
+
+@keyframes modalSlideIn {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -46%) scale(0.95);
+        box-shadow: 
+            0 0 0 rgba(0, 0, 0, 0),
+            0 0 0 rgba(76, 201, 240, 0),
+            inset 0 0 0 rgba(76, 201, 240, 0);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow: 
+            0 0 60px rgba(0, 0, 0, 0.4),
+            0 0 100px rgba(76, 201, 240, 0.15),
+            inset 0 0 30px rgba(76, 201, 240, 0.05);
+    }
+}
+
+@keyframes outlineGlow {
+    0%, 100% {
+        opacity: 0.8;
+    }
+    50% {
+        opacity: 0.3;
+    }
+}
+
+@keyframes borderFlow {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Modal overlay */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+}
+
+.modal.show {
+    display: block;
+}
+
+/* Modal container */
 .precheckout-modal {
-    max-width: 480px;
-    margin: 6vh auto;
-    padding: 20px;
-    background: var(--card-bg, var(--secondary-color));
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 460px;
+    padding: 3px;
+    color: var(--text-color);
+    z-index: 1100;
+    background: linear-gradient(145deg, 
+        rgba(76, 201, 240, 0.2),
+        rgba(255, 107, 53, 0.1));
+    border-radius: 24px;
+    animation: modalSlideIn 0.3s ease forwards;
+    overflow: hidden;
+    box-shadow: 
+        /* Outer glow */
+        0 0 60px rgba(0, 0, 0, 0.4),
+        0 0 100px rgba(76, 201, 240, 0.15),
+        /* Inner box shadow */
+        inset 0 0 30px rgba(76, 201, 240, 0.05),
+        /* Neon outline */
+        0 0 2px rgba(76, 201, 240, 0.5),
+        0 0 4px rgba(76, 201, 240, 0.3),
+        0 0 8px rgba(76, 201, 240, 0.2);
 }
+
+.precheckout-modal::before,
+.precheckout-modal::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    padding: 3px;
+}
+
+.precheckout-modal::before {
+    background: linear-gradient(135deg,
+        rgba(76, 201, 240, 0.5),
+        rgba(76, 201, 240, 0.2) 20%,
+        rgba(255, 107, 53, 0.2) 80%,
+        rgba(255, 107, 53, 0.5));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,
+                 linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+.precheckout-modal::after {
+    background: linear-gradient(180deg,
+        rgba(76, 201, 240, 0.2),
+        transparent 50%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,
+                 linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.precheckout-modal .modal-inner {
+    background: linear-gradient(165deg, 
+        rgba(18, 24, 38, 0.95) 0%,
+        rgba(10, 14, 25, 0.98) 100%);
+    padding: 32px 36px;
+    border-radius: 22px;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(76, 201, 240, 0.1);
+    box-shadow: 
+        /* Inner depth */
+        inset 0 2px 40px rgba(0, 0, 0, 0.2),
+        /* Subtle highlights */
+        inset 0 1px 2px rgba(255, 255, 255, 0.1);
+}
+
 .precheckout-modal h2 {
-    margin-top: 0;
+    color: #fff;
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 0.5px;
+    text-align: center;
+    background: linear-gradient(90deg, #fff, #4cc9f0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
 }
+
+.precheckout-modal p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+    margin-bottom: 36px;
+    text-align: center;
+    line-height: 1.6;
+}
+
+.precheckout-modal .modal-header {
+    position: relative;
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(76, 201, 240, 0.1);
+}
+
+.precheckout-modal .modal-header i {
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 3rem;
+    background: linear-gradient(135deg, var(--primary-color), #4cc9f0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0.8;
+    filter: drop-shadow(0 0 20px rgba(76, 201, 240, 0.3));
+}
+
+.precheckout-modal .form-group {
+    padding: 0 8px;
+}
+
 .precheckout-modal .form-row {
-    margin-bottom: 12px;
+    margin-bottom: 24px;
+    position: relative;
+    background: rgba(10, 14, 25, 0.6);
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid rgba(76, 201, 240, 0.1);
+    transition: all 0.3s ease;
+    box-shadow: 
+        inset 0 2px 20px rgba(0, 0, 0, 0.1),
+        0 1px 2px rgba(76, 201, 240, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
+
+.precheckout-modal .form-row::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    padding: 1px;
+    background: linear-gradient(135deg,
+        rgba(76, 201, 240, 0.2),
+        rgba(76, 201, 240, 0.1) 20%,
+        rgba(255, 255, 255, 0.05) 80%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,
+                 linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.precheckout-modal .form-row:hover {
+    background: rgba(10, 14, 25, 0.7);
+    border-color: rgba(76, 201, 240, 0.2);
+    transform: translateY(-1px);
+}
+
+.precheckout-modal .form-row:hover::before {
+    opacity: 1;
+}
+
+.precheckout-modal .form-row:focus-within {
+    background: rgba(10, 14, 25, 0.8);
+    border-color: rgba(76, 201, 240, 0.3);
+    box-shadow: 
+        0 4px 20px rgba(76, 201, 240, 0.1),
+        inset 0 2px 20px rgba(0, 0, 0, 0.2);
+}
+
+.precheckout-modal .form-row:focus-within::before {
+    opacity: 1;
+    background: linear-gradient(135deg,
+        rgba(76, 201, 240, 0.3),
+        rgba(76, 201, 240, 0.2) 20%,
+        rgba(255, 255, 255, 0.1) 80%);
+}
+
 .precheckout-modal label {
-    display:block;
-    margin-bottom:6px;
-    font-size:14px;
-    color:var(--text-color);
-}
-.precheckout-modal input {
-    width:100%;
-    padding:10px;
-    border-radius:8px;
-    border:1px solid var(--border-color);
-    background:var(--bg-color);
-    color:var(--text-color);
-}
-.precheckout-modal .btn-primary { background: var(--primary-color); color: #fff; border: none; padding:10px 14px; border-radius:8px; }
-.precheckout-modal .btn-secondary { background: transparent; color: var(--text-color); border:1px solid var(--border-color); padding:10px 14px; border-radius:8px; }
-
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    letter-spacing: 0.3px;
 }
 
-    /* Default theme variables */
-    --bg-color: var(--light-bg);
-    --text-color: var(--light-text);
-    --primary-color: var(--light-primary);
-    --secondary-color: var(--light-secondary);
-    --accent-color: var(--light-accent);
-    --border-color: var(--light-border);
-    --card-bg: var(--light-card-bg);
+.precheckout-modal .form-icon {
+    color: #4cc9f0;
+    font-size: 0.9rem;
+    opacity: 0.8;
 }
+
+.precheckout-modal .optional-text {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8rem;
+    font-weight: normal;
+}
+
+.precheckout-modal input,
+.precheckout-modal textarea,
+.precheckout-modal select {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(76, 201, 240, 0.15);
+    background: rgba(10, 14, 25, 0.6);
+    color: #fff;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.precheckout-modal .input-feedback {
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+    font-size: 0.8rem;
+    color: #4cc9f0;
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: all 0.3s ease;
+}
+
+.precheckout-modal input::placeholder,
+.precheckout-modal textarea::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+    font-weight: normal;
+    transition: all 0.3s ease;
+}
+
+.precheckout-modal input:hover,
+.precheckout-modal textarea:hover {
+    border-color: rgba(76, 201, 240, 0.3);
+    background: rgba(18, 24, 38, 0.7);
+    box-shadow: 0 4px 12px rgba(76, 201, 240, 0.1);
+}
+
+.precheckout-modal input:focus,
+.precheckout-modal textarea:focus {
+    outline: none;
+    border-color: rgba(76, 201, 240, 0.5);
+    background: rgba(18, 24, 38, 0.8);
+    box-shadow: 0 0 0 1px rgba(76, 201, 240, 0.1),
+                0 4px 16px rgba(76, 201, 240, 0.2);
+}
+
+.precheckout-modal input:focus::placeholder,
+.precheckout-modal textarea:focus::placeholder {
+    opacity: 0.3;
+    transform: translateX(4px);
+}
+
+/* Style autofill */
+.precheckout-modal input:-webkit-autofill {
+    -webkit-text-fill-color: #fff;
+    box-shadow: 0 0 0px 1000px rgba(18, 24, 38, 0.95) inset;
+    -webkit-box-shadow: 0 0 0px 1000px rgba(18, 24, 38, 0.95) inset;
+    transition: background-color 5000s ease-in-out 0s;
+    border-color: rgba(76, 201, 240, 0.5);
+}
+
+/* Required field indicator */
+.precheckout-modal .required {
+    display: inline-block;
+    color: #4cc9f0;
+    margin-left: 4px;
+    font-weight: bold;
+    animation: pulse 2s infinite;
+}
+
+/* Close button */
+.precheckout-modal .close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(76, 201, 240, 0.1);
+    border: 1px solid rgba(76, 201, 240, 0.2);
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 8px;
+    line-height: 1;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+.precheckout-modal .close-btn:hover {
+    transform: rotate(90deg);
+    background: rgba(76, 201, 240, 0.2);
+    border-color: rgba(76, 201, 240, 0.4);
+    color: #4cc9f0;
+}
+
+/* Form actions */
+.precheckout-modal .form-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: flex-end;
+    margin-top: 36px;
+    padding-top: 28px;
+    border-top: 1px solid rgba(76, 201, 240, 0.1);
+    position: relative;
+}
+
+.precheckout-modal .form-actions::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(76, 201, 240, 0.2),
+        transparent);
+}
+
+@keyframes buttonGlow {
+    0% { box-shadow: 0 4px 16px rgba(76, 201, 240, 0.2); }
+    50% { box-shadow: 0 4px 24px rgba(76, 201, 240, 0.4); }
+    100% { box-shadow: 0 4px 16px rgba(76, 201, 240, 0.2); }
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* Form buttons */
+.precheckout-modal .btn-primary,
+.precheckout-modal .btn-secondary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    min-width: 180px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.precheckout-modal .btn-primary {
+    background: linear-gradient(135deg, #4cc9f0 0%, #0077b6 100%);
+    color: #fff;
+    border: none;
+    box-shadow: 0 4px 16px rgba(76, 201, 240, 0.2);
+}
+
+.precheckout-modal .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.1) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.precheckout-modal .btn-primary:hover {
+    transform: translateY(-2px);
+}
+
+.precheckout-modal .btn-primary:hover::before {
+    opacity: 1;
+}
+
+.precheckout-modal .btn-primary:active {
+    transform: translateY(1px);
+}
+
+.precheckout-modal .btn-primary i {
+    font-size: 0.9em;
+    transition: transform 0.3s ease;
+}
+
+.precheckout-modal .btn-primary:hover i {
+    transform: translateX(4px);
+}
+
+.precheckout-modal .btn-secondary {
+    background: rgba(18, 24, 38, 0.8);
+    color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(76, 201, 240, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.precheckout-modal .btn-secondary:hover {
+    background: rgba(76, 201, 240, 0.1);
+    border-color: rgba(76, 201, 240, 0.4);
+    color: #4cc9f0;
+    transform: translateY(-2px);
+}
+
+/* Form footer */
+.precheckout-modal .form-footer {
+    margin-top: 32px;
+    text-align: center;
+    padding-top: 24px;
+    border-top: 1px solid rgba(76, 201, 240, 0.1);
+}
+
+.precheckout-modal .security-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(76, 201, 240, 0.1);
+    border-radius: 20px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+}
+
+.precheckout-modal .security-badge i {
+    color: #4cc9f0;
+}
+
+/* Form validation styles */
+.precheckout-modal input:invalid {
+    border-color: rgba(255, 99, 71, 0.4);
+}
+
+/* Responsive styles */
+@media (max-width: 480px) {
+    .precheckout-modal {
+        width: 95%;
+        padding: 1px;
+    }
+
+    .precheckout-modal .modal-inner {
+        padding: 28px 20px;
+    }
+
+    .precheckout-modal h2 {
+        font-size: 1.5rem;
+    }
+
+    .precheckout-modal .modal-header {
+        margin-bottom: 32px;
+        padding-bottom: 20px;
+    }
+
+    .precheckout-modal .modal-header i {
+        font-size: 2.5rem;
+        top: -50px;
+    }
+
+    .precheckout-modal .form-row {
+        padding: 12px;
+        margin-bottom: 20px;
+    }
+
+    .precheckout-modal .form-actions {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+        margin-top: 28px;
+        padding-top: 24px;
+    }
+
+    .precheckout-modal .btn-primary,
+    .precheckout-modal .btn-secondary {
+        width: 100%;
+        padding: 16px;
+        font-size: 1rem;
+    }
+
+    .precheckout-modal input,
+    .precheckout-modal textarea,
+    .precheckout-modal select {
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    .precheckout-modal .close-btn {
+        top: 16px;
+        right: 16px;
+        width: 28px;
+        height: 28px;
+        font-size: 16px;
+    }
+}
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.precheckout-modal .btn-primary:hover {
+    background: #e600b8;
+}
+
+.precheckout-modal .btn-secondary {
+    background: transparent;
+    color: #00ffff;
+    border: 1px solid #00ffff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.precheckout-modal .btn-secondary:hover {
+    background: rgba(0,255,255,0.1);
+}
+
+@media (max-width: 540px) {
+    .precheckout-modal {
+        width: 90%;
+        padding: 15px;
+    }
+    
+    .precheckout-modal h2 { 
+        font-size: 1.3rem;
+    }
+    
+    .precheckout-modal input,
+    .precheckout-modal textarea,
+    .precheckout-modal select {
+        font-size: 0.9rem;
+    }
+    
+    .precheckout-modal .form-actions { 
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .precheckout-modal .btn-primary,
+    .precheckout-modal .btn-secondary {
+        width: 100%;
+    }
+}
+
+
 
 /* Theme animations and backgrounds */
 @keyframes gradient {
@@ -220,19 +789,7 @@ a:hover {
     text-transform: capitalize;
 }
 
-/* Light Theme */
-.light-theme {
-    --bg-color: var(--light-bg);
-    --text-color: var(--light-text);
-    --primary-color: var(--light-primary);
-    --secondary-color: var(--light-secondary);
-    --accent-color: var(--light-accent);
-    --border-color: var(--light-border);
-    --card-bg: var(--light-card-bg);
-    background: linear-gradient(-45deg, #f0f2f5, #e2e8f0, #bfdbfe, #dbeafe);
-    background-size: 400% 400%;
-    animation: gradient 15s ease infinite;
-}
+
 
 /* Dark Theme */
 .dark-theme {

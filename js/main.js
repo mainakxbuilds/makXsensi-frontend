@@ -5,7 +5,6 @@ const API_URL = window.location.hostname === 'localhost' || window.location.host
 
 // Theme Management
 const themes = [
-    { id: 'light', icon: 'fa-sun', label: 'Light' },
     { id: 'dark', icon: 'fa-moon', label: 'Dark' },
     { id: 'neon', icon: 'fa-bolt', label: 'Neon' }
 ];
@@ -304,37 +303,157 @@ async function buyPack(packName, amount) {
         // Show pre-checkout modal to collect customer details (email required)
         const customerDetails = await new Promise((resolve) => {
             const modal = document.getElementById('preCheckoutModal');
+            const form = document.getElementById('preCheckoutForm');
             const nameInput = document.getElementById('pc-name');
             const emailInput = document.getElementById('pc-email');
             const phoneInput = document.getElementById('pc-phone');
             const continueBtn = document.getElementById('pc-continue');
+            const feedbacks = document.querySelectorAll('.input-feedback');
 
-            // Reset inputs
-            nameInput.value = '';
-            emailInput.value = '';
-            phoneInput.value = '';
-
+            // Reset form state
+            form.reset();
+            feedbacks.forEach(feedback => feedback.textContent = '');
+            modal.classList.add('fade-in');
             modal.style.display = 'block';
+            modal.setAttribute('aria-hidden', 'false');
+            
+            // Focus trap for accessibility
+            const focusableElements = modal.querySelectorAll(
+                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            );
+            const firstFocusable = focusableElements[0];
+            const lastFocusable = focusableElements[focusableElements.length - 1];
+            
+            // Setup modal interactions
+            const closeBtn = modal.querySelector('#pc-close');
+            const cancelBtn = modal.querySelector('#pc-cancel');
+
+            // Validate inputs on change
+            const validateInput = (input) => {
+                const feedback = input.parentElement.querySelector('.input-feedback');
+                if (input.type === 'email' && input.value) {
+                    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value);
+                    feedback.textContent = isValid ? '' : 'Please enter a valid email';
+                    feedback.style.opacity = isValid ? '0' : '1';
+                    feedback.style.color = isValid ? '#4cc9f0' : '#ff6b6b';
+                    return isValid;
+                }
+                if (input.type === 'tel' && input.value) {
+                    const isValid = /^\d{10}$/.test(input.value.replace(/\D/g, ''));
+                    feedback.textContent = isValid ? '' : 'Please enter a valid phone number';
+                    feedback.style.opacity = isValid ? '0' : '1';
+                    feedback.style.color = isValid ? '#4cc9f0' : '#ff6b6b';
+                    return isValid;
+                }
+                return true;
+            };
+
+            [emailInput, phoneInput].forEach(input => {
+                input.addEventListener('input', () => validateInput(input));
+                input.addEventListener('blur', () => validateInput(input));
+            });
+
+            // Setup event listeners
+            continueBtn.addEventListener('click', onContinue);
+            closeBtn.addEventListener('click', onClose);
+            cancelBtn.addEventListener('click', onClose);
+            modal.addEventListener('click', onOutsideClick);
+            document.addEventListener('keydown', onEscKey);
+
+            // Focus trap
+            modal.addEventListener('keydown', (e) => {
+                if (e.key === 'Tab') {
+                    if (e.shiftKey) {
+                        if (document.activeElement === firstFocusable) {
+                            e.preventDefault();
+                            lastFocusable.focus();
+                        }
+                    } else {
+                        if (document.activeElement === lastFocusable) {
+                            e.preventDefault();
+                            firstFocusable.focus();
+                        }
+                    }
+                }
+            });
 
             function cleanup(result) {
-                // remove listeners
+                // Remove event listeners
                 continueBtn.removeEventListener('click', onContinue);
+                closeBtn.removeEventListener('click', onClose);
+                cancelBtn.removeEventListener('click', onClose);
+                modal.removeEventListener('click', onOutsideClick);
+                document.removeEventListener('keydown', onEscKey);
+                [emailInput, phoneInput].forEach(input => {
+                    input.removeEventListener('input', () => validateInput(input));
+                    input.removeEventListener('blur', () => validateInput(input));
+                });
+                
+                // Reset form and UI state
+                form.reset();
+                feedbacks.forEach(feedback => {
+                    feedback.textContent = '';
+                    feedback.style.opacity = '0';
+                });
+                modal.classList.remove('fade-in');
+                modal.style.display = 'none';
+                modal.setAttribute('aria-hidden', 'true');
+                
                 resolve(result);
             }
 
             function onContinue() {
-                const emailVal = (emailInput.value || '').trim();
-                if (!emailVal || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(emailVal)) {
-                    alert('Please enter a valid email address.');
+                // Validate all fields
+                const emailValid = validateInput(emailInput);
+                const phoneValid = validateInput(phoneInput);
+                
+                if (!emailValid) {
+                    emailInput.focus();
                     return;
                 }
+                
+                if (phoneInput.value && !phoneValid) {
+                    phoneInput.focus();
+                    return;
+                }
+
                 const data = {
-                    customerEmail: emailVal,
-                    customerName: (nameInput.value || '').trim(),
-                    customerPhone: (phoneInput.value || '').trim()
+                    customerEmail: emailInput.value.trim(),
+                    customerName: nameInput.value.trim(),
+                    customerPhone: phoneInput.value.trim()
                 };
+
+                // Show loading state
+                continueBtn.disabled = true;
+                const btnText = continueBtn.innerHTML;
+                continueBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+                // Animate modal close
+                modal.classList.add('fade-out');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    modal.classList.remove('fade-out');
+                    continueBtn.disabled = false;
+                    continueBtn.innerHTML = btnText;
+                    cleanup(data);
+                }, 300);
+            }
+
+            function onClose() {
                 modal.style.display = 'none';
-                cleanup(data);
+                cleanup(null);
+            }
+
+            function onOutsideClick(event) {
+                if (event.target === modal) {
+                    onClose();
+                }
+            }
+
+            function onEscKey(e) {
+                if (e.key === 'Escape') {
+                    onClose();
+                }
             }
 
             continueBtn.addEventListener('click', onContinue);

@@ -111,29 +111,80 @@
     </div>
     
     <!-- Pre-checkout Modal -->
-    <div id="preCheckoutModal" class="modal" style="display:none;">
-        <div class="modal-content precheckout-modal">
-            <span class="close-modal" onclick="closeModal('preCheckoutModal')">&times;</span>
-            <h2>Confirm your details</h2>
-            <p>Please enter your email so we can send your sensitivity pack and invite you to the Discord.</p>
-            <form id="preCheckoutForm">
-                <div class="form-row">
-                    <label for="pc-name">Name (optional)</label>
-                    <input id="pc-name" name="name" type="text" placeholder="Your name">
+
+    <div id="preCheckoutModal" class="modal" aria-hidden="true">
+        <div class="precheckout-modal" role="dialog" aria-modal="true" aria-labelledby="precheckoutTitle">
+            <button class="close-btn" aria-label="Close checkout form" id="pc-close">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-inner">
+                <div class="modal-header">
+                    <i class="fas fa-shield-alt"></i>
+                    <h2 id="precheckoutTitle">Complete Your Order</h2>
+                    <p>Enter your details to receive your premium sensi pack and exclusive Discord access</p>
                 </div>
-                <div class="form-row">
-                    <label for="pc-email">Email (required)</label>
-                    <input id="pc-email" name="email" type="email" placeholder="you@example.com" required>
+                <form id="preCheckoutForm" autocomplete="off" novalidate>
+                    <div class="form-group">
+                        <div class="form-row">
+                            <label for="pc-name">
+                                <i class="fas fa-user form-icon"></i>
+                                Name <small class="optional-text">(optional)</small>
+                            </label>
+                            <input id="pc-name" 
+                                   name="name" 
+                                   type="text" 
+                                   placeholder="Enter your name" 
+                                   spellcheck="false"
+                                   autocomplete="name">
+                            <div class="input-feedback"></div>
+                        </div>
+                        <div class="form-row">
+                            <label for="pc-email">
+                                <i class="fas fa-envelope form-icon"></i>
+                                Email <span class="required" title="Required">*</span>
+                            </label>
+                            <input id="pc-email" 
+                                   name="email" 
+                                   type="email" 
+                                   placeholder="Enter your email" 
+                                   required 
+                                   spellcheck="false"
+                                   autocomplete="email">
+                            <div class="input-feedback"></div>
+                        </div>
+                        <div class="form-row">
+                            <label for="pc-phone">
+                                <i class="fas fa-phone-alt form-icon"></i>
+                                Phone <small class="optional-text">(optional)</small>
+                            </label>
+                            <input id="pc-phone" 
+                                   name="phone" 
+                                   type="tel" 
+                                   placeholder="Enter your phone number" 
+                                   pattern="[0-9]{10}"
+                                   spellcheck="false"
+                                   autocomplete="tel">
+                            <div class="input-feedback"></div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-primary" id="pc-continue">
+                            <span>Continue to Payment</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                        <button type="button" class="btn-secondary" id="pc-cancel">
+                            <i class="fas fa-times"></i>
+                            <span>Cancel</span>
+                        </button>
+                    </div>
+                </form>
+                <div class="form-footer">
+                    <div class="security-badge">
+                        <i class="fas fa-lock"></i>
+                        <span>Secure Checkout</span>
+                    </div>
                 </div>
-                <div class="form-row">
-                    <label for="pc-phone">Phone (optional)</label>
-                    <input id="pc-phone" name="phone" type="tel" placeholder="99999xxxxx">
-                </div>
-                <div style="display:flex;gap:8px;margin-top:12px;">
-                    <button type="button" class="btn-primary" id="pc-continue">Continue to Payment</button>
-                    <button type="button" class="btn-secondary" onclick="closeModal('preCheckoutModal')">Cancel</button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 
