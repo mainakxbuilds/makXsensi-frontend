@@ -531,11 +531,25 @@ async function buyPack(packName, amount) {
 
                     if (verifyResult.success) {
                         // Show success modal with order info, user's email and Discord invite
-                        showSuccessModal(packName, amount, verifyResult.orderId, verifyResult.customerEmail || '', verifyResult.communityAccess?.discordInvite || 'https://discord.gg/FjBGpr8gBJ');
+                        showSuccessModal(
+                            packName, 
+                            amount, 
+                            verifyResult.orderId, 
+                            verifyResult.customerEmail || options.prefill.email || '', 
+                            verifyResult.communityAccess?.discordInvite || 'https://discord.gg/FjBGpr8gBJ'
+                        );
+                        
+                        // Log successful payment
+                        console.log('Payment successful:', {
+                            orderId: verifyResult.orderId,
+                            email: verifyResult.customerEmail || options.prefill.email,
+                            amount: amount,
+                            packName: packName
+                        });
                     } else {
                         const errorMessage = verifyResult.message || 'Payment verification failed';
                         console.error('Verification failed:', errorMessage);
-                        showErrorModal(`Payment verification failed: ${errorMessage}. Please contact support.`);
+                        showErrorModal(`Payment verification failed: ${errorMessage}. Please contact support with Order ID: ${verifyResult.orderId || 'N/A'}`);
                     }
                 } catch (error) {
                     console.error('Verification error:', error);
