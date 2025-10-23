@@ -242,9 +242,9 @@ async function buyPack(packName, amount) {
                             razorpay_signature: response.razorpay_signature,
                             packName: packName,
                             amount: amount,
-                            customerEmail: response.email || '',
-                            customerPhone: response.contact || '',
-                            customerName: response.name || ''
+                            customerEmail: options.prefill.email || '',
+                            customerPhone: options.prefill.contact || '',
+                            customerName: options.prefill.name || ''
                         })
                     });
 
