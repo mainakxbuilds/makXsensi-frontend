@@ -14,6 +14,14 @@
     --dark-secondary: #374151;
     --dark-accent: #60a5fa;
     --dark-border: #374151;
+
+    /* Default theme variables */
+    --bg-color: var(--light-bg);
+    --text-color: var(--light-text);
+    --primary-color: var(--light-primary);
+    --secondary-color: var(--light-secondary);
+    --accent-color: var(--light-accent);
+    --border-color: var(--light-border);
 }
 
 /* Theme Classes */

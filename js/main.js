@@ -9,13 +9,25 @@ const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
 let currentTheme = localStorage.getItem('theme') || (prefersDarkScheme.matches ? 'dark' : 'light');
 
 function setTheme(theme) {
-    document.body.className = `${theme}-theme`;
+    // Remove any existing theme classes
+    document.body.classList.remove('light-theme', 'dark-theme');
+    // Add the new theme class
+    document.body.classList.add(`${theme}-theme`);
     localStorage.setItem('theme', theme);
     themeToggle.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    // Update CSS variables
+    document.documentElement.style.setProperty('--bg-color', theme === 'dark' ? 'var(--dark-bg)' : 'var(--light-bg)');
+    document.documentElement.style.setProperty('--text-color', theme === 'dark' ? 'var(--dark-text)' : 'var(--light-text)');
+    document.documentElement.style.setProperty('--primary-color', theme === 'dark' ? 'var(--dark-primary)' : 'var(--light-primary)');
+    document.documentElement.style.setProperty('--secondary-color', theme === 'dark' ? 'var(--dark-secondary)' : 'var(--light-secondary)');
+    document.documentElement.style.setProperty('--accent-color', theme === 'dark' ? 'var(--dark-accent)' : 'var(--light-accent)');
+    document.documentElement.style.setProperty('--border-color', theme === 'dark' ? 'var(--dark-border)' : 'var(--light-border)');
 }
 
 // Initialize theme
-setTheme(currentTheme);
+document.addEventListener('DOMContentLoaded', () => {
+    setTheme(currentTheme);
+});
 
 // Theme toggle handler
 themeToggle?.addEventListener('click', () => {
