@@ -1723,15 +1723,100 @@ body {
     box-shadow: 0 20px 60px rgba(0,0,0,0.45), inset 0 0 30px rgba(76,201,240,0.02);
 }
 
+/* Input wrapper to allow icons and pill-shaped inputs */
+.precheckout-modal .input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 .precheckout-modal label { display:block; color:var(--text-gray); margin-bottom:6px; }
-.precheckout-modal input { width:100%; padding:12px 14px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background: rgba(10,14,25,0.6); color:var(--text-light); }
+
+/* Circular / pill style inputs */
+.precheckout-modal .input-pill,
+.precheckout-modal input.input-pill,
+.precheckout-modal select.input-pill {
+    width: 100%;
+    padding: 12px 20px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: linear-gradient(180deg, rgba(10,14,25,0.72), rgba(18,24,38,0.6));
+    color: var(--text-light);
+    font-size: 1rem;
+    transition: all 0.25s cubic-bezier(0.2,0.9,0.2,1);
+    box-shadow: inset 0 -6px 12px rgba(0,0,0,0.45), 0 6px 18px rgba(0,0,0,0.45);
+}
+
+/* Textareas remain slightly rounded but match pill aesthetic */
+.precheckout-modal textarea.input-pill,
+.precheckout-modal textarea {
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 14px;
+    min-height: 100px;
+}
+
+.precheckout-modal .form-icon {
+    color: #4cc9f0;
+    font-size: 1rem;
+    opacity: 0.95;
+    margin-left: 4px;
+}
+
+/* feedback shown as a small capsule beneath inputs */
+.precheckout-modal .input-feedback {
+    position: absolute;
+    bottom: -22px;
+    left: 12px;
+    font-size: 0.8rem;
+    color: #4cc9f0;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: all 0.25s ease;
+    background: rgba(255,255,255,0.04);
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(76,201,240,0.06);
+}
+
+/* hover / focus states for pill inputs */
+.precheckout-modal .input-pill:hover,
+.precheckout-modal input.input-pill:hover,
+.precheckout-modal select.input-pill:hover {
+    transform: translateY(-2px);
+    box-shadow: inset 0 -4px 14px rgba(0,0,0,0.5), 0 10px 28px rgba(76,201,240,0.06);
+}
+
+.precheckout-modal .input-pill:focus,
+.precheckout-modal input.input-pill:focus,
+.precheckout-modal select.input-pill:focus {
+    outline: none;
+    border-color: rgba(76,201,240,0.6);
+    box-shadow: 0 8px 30px rgba(76,201,240,0.12), inset 0 1px 0 rgba(255,255,255,0.02);
+}
+
+.precheckout-modal input::placeholder,
+.precheckout-modal textarea::placeholder {
+    color: rgba(255,255,255,0.6);
+    opacity: 1;
+}
+
 .precheckout-modal .form-actions button { min-width:140px; }
 .precheckout-modal .form-actions .btn-primary { background: linear-gradient(135deg, var(--primary-color), #4361EE); }
 .precheckout-modal .form-actions .btn-secondary { background: transparent; border:1px solid rgba(255,255,255,0.06); color:var(--text-light); }
+
+/* Show feedback when active (JS toggles opacity) */
+.precheckout-modal .input-wrapper:focus-within .input-feedback,
+.precheckout-modal .input-wrapper.active .input-feedback {
+    opacity: 1;
+    transform: translateY(0);
+}
 
 /* Small screens */
 @media (max-width: 540px) {
     .precheckout-modal { padding: 16px; border-radius: 12px; }
     .precheckout-modal .form-actions { flex-direction: column-reverse; gap:10px; }
+    .precheckout-modal .input-pill { padding: 12px 16px; }
 }
 
