@@ -7,9 +7,7 @@
     { "src": "/js/(.*)", "dest": "/js/$1" },
     { "src": "(.*)", "dest": "/index.html" }
   ],
-  "builds": [
-    { "src": "**/*", "use": "@vercel/static" }
-  ],
+  
   "github": {
     "silent": true
   }
