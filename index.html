@@ -110,80 +110,51 @@
         </div>
     </div>
     
-    <!-- Pre-checkout Modal -->
+    <!-- Redesigned Pre-checkout Modal (matches site look & accessible) -->
 
     <div id="preCheckoutModal" class="modal" aria-hidden="true">
-        <div class="precheckout-modal" role="dialog" aria-modal="true" aria-labelledby="precheckoutTitle">
-            <button class="close-btn" aria-label="Close checkout form" id="pc-close">
-                <i class="fas fa-times"></i>
-            </button>
-            <div class="modal-inner">
-                <div class="modal-header">
-                    <i class="fas fa-shield-alt"></i>
-                    <h2 id="precheckoutTitle">Complete Your Order</h2>
-                    <p>Enter your details to receive your premium sensi pack and exclusive Discord access</p>
-                </div>
-                <form id="preCheckoutForm" autocomplete="off" novalidate>
-                    <div class="form-group">
-                        <div class="form-row">
-                            <label for="pc-name">
-                                <i class="fas fa-user form-icon"></i>
-                                Name <small class="optional-text">(optional)</small>
-                            </label>
-                            <input id="pc-name" 
-                                   name="name" 
-                                   type="text" 
-                                   placeholder="Enter your name" 
-                                   spellcheck="false"
-                                   autocomplete="name">
-                            <div class="input-feedback"></div>
-                        </div>
-                        <div class="form-row">
-                            <label for="pc-email">
-                                <i class="fas fa-envelope form-icon"></i>
-                                Email <span class="required" title="Required">*</span>
-                            </label>
-                            <input id="pc-email" 
-                                   name="email" 
-                                   type="email" 
-                                   placeholder="Enter your email" 
-                                   required 
-                                   spellcheck="false"
-                                   autocomplete="email">
-                            <div class="input-feedback"></div>
-                        </div>
-                        <div class="form-row">
-                            <label for="pc-phone">
-                                <i class="fas fa-phone-alt form-icon"></i>
-                                Phone <small class="optional-text">(optional)</small>
-                            </label>
-                            <input id="pc-phone" 
-                                   name="phone" 
-                                   type="tel" 
-                                   placeholder="Enter your phone number" 
-                                   pattern="[0-9]{10}"
-                                   spellcheck="false"
-                                   autocomplete="tel">
-                            <div class="input-feedback"></div>
+        <div class="modal-wrapper">
+            <div class="modal-content precheckout-modal" role="dialog" aria-modal="true" aria-labelledby="precheckoutTitle">
+                <header style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <i class="fas fa-shopping-cart" style="font-size:22px;color:var(--primary-color)"></i>
+                        <div>
+                            <h2 id="precheckoutTitle" style="margin:0;font-size:1.25rem;">Complete Your Order</h2>
+                            <div style="font-size:0.9rem;color:var(--text-gray)">Enter your email to receive the pack and Discord access</div>
                         </div>
                     </div>
-                    <div class="form-actions">
-                        <button type="button" class="btn-primary" id="pc-continue">
-                            <span>Continue to Payment</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </button>
-                        <button type="button" class="btn-secondary" id="pc-cancel">
-                            <i class="fas fa-times"></i>
-                            <span>Cancel</span>
-                        </button>
+                    <div>
+                        <button class="btn-secondary" id="pc-close" aria-label="Close checkout form" style="min-width:44px;height:36px;border-radius:8px;">Close</button>
+                    </div>
+                </header>
+
+                <form id="preCheckoutForm" autocomplete="off" novalidate style="margin-top:18px;">
+                    <div class="form-group" style="display:flex;flex-direction:column;gap:12px;">
+                        <label style="font-size:0.95rem;color:var(--text-gray);">Name <small class="optional-text">(optional)</small>
+                            <input id="pc-name" name="name" type="text" placeholder="Your name" autocomplete="name" />
+                        </label>
+
+                        <label style="font-size:0.95rem;color:var(--text-gray);">Email <span class="required" title="Required">*</span>
+                            <input id="pc-email" name="email" type="email" placeholder="you@example.com" required autocomplete="email" />
+                        </label>
+
+                        <label style="font-size:0.95rem;color:var(--text-gray);">Phone <small class="optional-text">(optional)</small>
+                            <input id="pc-phone" name="phone" type="tel" placeholder="Optional - 10 digits" autocomplete="tel" />
+                        </label>
+                    </div>
+
+                    <div class="form-actions" style="display:flex;gap:12px;justify-content:flex-end;margin-top:18px;">
+                        <button type="button" class="btn-secondary" id="pc-cancel">Cancel</button>
+                        <button type="button" class="btn-primary" id="pc-continue">Continue to Payment</button>
                     </div>
                 </form>
-                <div class="form-footer">
-                    <div class="security-badge">
-                        <i class="fas fa-lock"></i>
-                        <span>Secure Checkout</span>
+                <footer style="margin-top:16px;font-size:0.85rem;color:var(--text-gray);display:flex;justify-content:space-between;align-items:center;">
+                    <div class="security-badge" style="display:flex;align-items:center;gap:8px;">
+                        <i class="fas fa-lock" style="color:var(--accent-color)"></i>
+                        <span>Secure Checkout — powered by SendGrid & Razorpay</span>
                     </div>
-                </div>
+                    <div style="font-size:0.85rem;color:var(--text-gray)">We never share your email.</div>
+                </footer>
             </div>
         </div>
     </div>
