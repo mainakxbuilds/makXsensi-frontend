@@ -331,21 +331,25 @@ async function buyPack(packName, amount) {
             const closeBtn = modal.querySelector('#pc-close');
             const cancelBtn = modal.querySelector('#pc-cancel');
 
-            // Validate inputs on change
+            // Validate inputs on change (tolerant if .input-feedback elements are missing)
             const validateInput = (input) => {
-                const feedback = input.parentElement.querySelector('.input-feedback');
+                const feedback = input.parentElement ? input.parentElement.querySelector('.input-feedback') : null;
                 if (input.type === 'email' && input.value) {
                     const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value);
-                    feedback.textContent = isValid ? '' : 'Please enter a valid email';
-                    feedback.style.opacity = isValid ? '0' : '1';
-                    feedback.style.color = isValid ? '#4cc9f0' : '#ff6b6b';
+                    if (feedback) {
+                        feedback.textContent = isValid ? '' : 'Please enter a valid email';
+                        feedback.style.opacity = isValid ? '0' : '1';
+                        feedback.style.color = isValid ? '#4cc9f0' : '#ff6b6b';
+                    }
                     return isValid;
                 }
                 if (input.type === 'tel' && input.value) {
                     const isValid = /^\d{10}$/.test(input.value.replace(/\D/g, ''));
-                    feedback.textContent = isValid ? '' : 'Please enter a valid phone number';
-                    feedback.style.opacity = isValid ? '0' : '1';
-                    feedback.style.color = isValid ? '#4cc9f0' : '#ff6b6b';
+                    if (feedback) {
+                        feedback.textContent = isValid ? '' : 'Please enter a valid phone number';
+                        feedback.style.opacity = isValid ? '0' : '1';
+                        feedback.style.color = isValid ? '#4cc9f0' : '#ff6b6b';
+                    }
                     return isValid;
                 }
                 return true;
